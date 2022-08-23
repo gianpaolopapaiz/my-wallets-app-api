@@ -6,4 +6,10 @@ Rails.application.routes.draw do
              }
 
   get '/member-data', to: 'members#show'
+
+  namespace :api do
+    namespace :v1 do
+      resources :accounts
+    end
+  end
 end
