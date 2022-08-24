@@ -44,5 +44,8 @@ class Api::V1::AccountsController < ApplicationController
 
   def set_account
     @account = current_user.accounts.find(params[:id])
+
+    rescue ActiveRecord::RecordNotFound
+      render json: { message: 'You are not authorized'}, status: :unauthorized if @account.nil?
   end
 end
