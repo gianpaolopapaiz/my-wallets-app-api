@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::AccountsController, type: :model do
+RSpec.describe Account, type: :model do
   before :each do
     @user = create(:user)
     @account = create(:account, user: @user)
