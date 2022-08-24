@@ -16,7 +16,7 @@ class Api::V1::AccountsController < ApplicationController
     if @account.save
       render json: @account, status: :created
     else
-      render json: { errors: @account.errors.messages }, status: :unprocessable_entity
+      render_error_message(@account)
     end
   end
 
@@ -24,7 +24,7 @@ class Api::V1::AccountsController < ApplicationController
     if @account.update(account_params)
       render json: @account, status: :ok
     else
-      render json: { errors: @account.errors.messages }, status: :unprocessable_entity
+      render_error_message(@account)
     end
   end
 
@@ -32,7 +32,7 @@ class Api::V1::AccountsController < ApplicationController
     if @account.destroy
       render json: { message: 'Account successfully destroyed'}, status: :ok
     else
-      render json: { errors: @account.errors.messages }, status: :unprocessable_entity
+      render_error_message(@account)
     end
   end
 
@@ -46,6 +46,6 @@ class Api::V1::AccountsController < ApplicationController
     @account = current_user.accounts.find(params[:id])
 
     rescue ActiveRecord::RecordNotFound
-      render json: { message: 'You are not authorized'}, status: :unauthorized if @account.nil?
+      render_unauthorized_message
   end
 end
