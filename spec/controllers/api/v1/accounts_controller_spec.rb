@@ -85,6 +85,56 @@ RSpec.describe Api::V1::AccountsController, type: :request do
     expect(parsed_body['message']).to eq('Account successfully destroyed')
   end
 
+  context 'when does not work returns an error message' do
+    it "CREATE - does not create an account related to the user" do
+      accounts_count = Account.all.size
+      params = {
+        account:
+          {
+            name: 'Account 3',
+            description: 'Account 3 description',
+            initial_amount: 15.5
+          }
+      }
+
+      allow_any_instance_of(Account).to receive(:save).and_return(false)
+      post "/api/v1/accounts", params: params
+
+      expect(response.status).to eq(422)
+      expect(Account.all.size).to eq(accounts_count)
+    end
+
+    it "Updates - creates an account related to the user" do
+      accounts_count = Account.all.size
+      params = {
+        account:
+          {
+            name: 'Account 3',
+            description: 'Account 3 description',
+            initial_amount: 15.5
+          }
+      }
+
+      allow_any_instance_of(Account).to receive(:update).and_return(false)
+      patch "/api/v1/accounts/#{@account2.id}", params: params
+
+      expect(response.status).to eq(422)
+      expect(Account.all.size).to eq(accounts_count)
+      expect(@account2.reload.name).not_to eq('Account 3')
+      expect(@account2.description).not_to eq('Account 3 description')
+      expect(@account2.initial_amount).not_to eq(15.5)
+    end
+
+    it "DESTROY - destroys an account related to the user" do
+      accounts_count = Account.all.size
+      allow_any_instance_of(Account).to receive(:destroy).and_return(false)
+      delete "/api/v1/accounts/#{@account2.id}"
+
+      expect(response.status).to eq(422)
+      expect(Account.all.size).to eq(accounts_count)
+    end
+  end
+
   context 'for another user accounts' do
     before :each do
       @user2 = create(:user, email: 'user2@email.com')
