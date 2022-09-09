@@ -1,4 +1,11 @@
 FactoryBot.define do
+  factory :category do
+    name { "MyString" }
+    description { "MyText" }
+    category { nil }
+    user { nil }
+  end
+
   factory(:user) do
     name { 'Sample User' }
     email { 'user@email.com' }
