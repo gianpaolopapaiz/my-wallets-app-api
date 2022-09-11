@@ -5,5 +5,6 @@ class User < ApplicationRecord
          jwt_revocation_strategy: JwtDenylist
 
   has_many :accounts
+  has_many :categories
   validates :name, presence: true
 end

@@ -34,7 +34,7 @@ module Api
 
       def destroy
         if @category.destroy
-          render json: { message: 'category successfully destroyed' }, status: :ok
+          render json: { message: 'Category successfully destroyed' }, status: :ok
         else
           render_error_message(@category)
         end
@@ -47,7 +47,9 @@ module Api
       end
 
       def set_category
-        @category = current_user.categories.fing(params[:id])
+        @category = current_user.categories.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render_unauthorized_message
       end
     end
   end
