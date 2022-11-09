@@ -22,4 +22,30 @@ RSpec.describe Api::V1::TransactionsController, type: :request do
     expect(parsed_body.first['id']).to eq(t1.id)
     expect(parsed_body.last['id']).to eq(t2.id)
   end
+
+  it "CREATE - creates a transaction related to an account" do
+    transaction_count = Transaction.all.size
+    current_date = Date.current
+    params = {
+      account_id: @account.id,
+      transaction:
+        {
+          title: 'Transaction 1',
+          description: 'Transaction 1 description',
+          amount: 10.5,
+          date: current_date
+        }
+    }
+
+    post "/api/v1/accounts/#{@account.id}/transactions", params: params
+    parsed_body = JSON.parse(response.body)
+
+    expect(response.status).to eq(201)
+    expect(Transaction.all.size).to eq(transaction_count + 1)
+    expect(parsed_body['title']).to eq('Transaction 1')
+    expect(parsed_body['description']).to eq('Transaction 1 description')
+    expect(parsed_body['amount']).to eq(10.5)
+    expect(parsed_body['date']).to eq(current_date.strftime('%Y-%m-%d'))
+    expect(parsed_body['account_id']).to eq(@account.id)
+  end
 end
